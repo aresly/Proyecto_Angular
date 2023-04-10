@@ -1,0 +1,152 @@
+
+<div class="card">
+    <div class="card-header">
+        <h1>{{ tituloListaAutos}}</h1>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <label>Filtrar por:</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" [(ngModel)]="filtrarPor" (input)="consultaAuto()">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Filtrar por:</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" >Nuevo</button>
+            </div>
+        </div>
+    
+        <div class="table-responsive" *ngIf="listaAutos.length>0">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="6">
+                            <button class="btn btn-primary" (click)="toggleImage()">
+                                {{ muestraImagen ? "Oculta " : "Muestra "}}imagenes
+                            </button>
+                            
+                        </th>
+                        <th>
+                          <div class="input-group input-group-sm mb-3">
+                            <span class="input-group-text" id="basic-addon1">Filas: </span>
+                            <select class="form-select form-select-sm" [(ngModel)]="rows" (change)="cambioRows()">
+                              <option value="5">5</option>
+                              <option value="10">10</option>
+                              <option value="25">25</option>
+                              <option value="50">50</option>
+                              <option value="100">100</option>
+                              <option value="500">500</option>
+                            </select>
+                          </div>
+                        </th>
+                      </tr>
+                    <tr class="text-primary">
+                        <th>Imagen</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Año</th>
+                        <th>Creado por:</th>
+                        <th>Actualizado por:</th>
+                        <th>Calificación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let auto of listaAutos">
+                        <td>
+                            <p><img [src]="auto.foto" *ngIf="muestraImagen"
+                                [style.width.px]="anchoImagen"
+                                [style.margin.px]="margenImagen"></p>
+                        </td>
+                        <td>{{ auto.marca }}</td>
+                        <td><a [routerLink]="['/autos',auto.codigo]">{{ auto.modelo | lowercase | aEspacio:"-" }}</a></td>
+                        <td>{{ auto.anio }}</td>
+                        <td>{{ auto.usuario }}</td>
+                        <td>{{ auto.usuario_mod}}</td>
+                        <td><estrellas [calificacion]="auto.calificacion" (starsClick)="onClickCalificacion($event)"></estrellas></td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                <a class="btn btn-sm btn-primary" [routerLink]="['/autos',auto.codigo]">Ver</a>
+                                <button class="btn btn-danger" (click)="eliminarAuto(auto)">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                      <td colspan="7">
+                        <paginacion [rows]="rows" [pages]="pages" (selectPage)="seleccionarPagina($event)"></paginacion>
+                      </td>
+                    </tr>
+                  </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+
+
+<div class="modal fade" #exampleModal id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="row g-3" class="needs-validation" [formGroup]="formularioAuto" [ngClass]="{'was-validated':wasValidated}">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+            <div class="mb-3 ">
+              <label for="formControlCodigo" class="form-label">Codigo</label>
+              <input type="text" class="form-control" id="formControlCodigo" formControlName="codigo" required minlength="3">
+              <validacion  class="invalid-feedback" [summited]="wasValidated" [control]="formularioAuto.controls['codigo']"></validacion>
+              
+            </div>
+  
+            <div class="mb-3">
+              <label for="formControlMarca" class="form-label">Marca</label>
+              <input type="text" class="form-control" id="formControlMarca" formControlName="marca" required>
+              <validacion [summited]="wasValidated" [control]="formularioAuto.controls['marca']"></validacion>
+            </div>
+  
+            <div class="mb-3">
+              <label for="formControlModelo" class="form-label">Modelo</label>
+              <input type="text" class="form-control" id="formControlModelo" formControlName="modelo" required>
+              <validacion [summited]="wasValidated" [control]="formularioAuto.controls['modelo']"></validacion>
+            </div>
+  
+            <div class="mb-3">
+              <label for="formControlAnio" class="form-label">Año</label>
+              <input type="text" class="form-control" id="formControlAnio" formControlName="anio" minlength="4" maxlength="4" pattern="^[0-9]*$" required>
+              <validacion [summited]="wasValidated" [control]="formularioAuto.controls['anio']"></validacion>
+            </div>
+  
+            <div class="mb-3">
+              <label for="formControlCalificacion" class="form-label">Calificación</label>
+              <input type="number" class="form-control" id="formControlCalificacion" formControlName="calificacion" maxlength="1" min="1" max="5" pattern="^[0-9]*$" required>
+              <validacion [summited]="wasValidated" [control]="formularioAuto.controls['calificacion']"></validacion>
+            </div>
+  
+            <div class="mb-3">
+              <label for="formControlFoto" class="form-label">Imagen URL:</label>
+              <input type="url" class="form-control" id="formControlFoto" formControlName="foto">
+            
+            </div>
+  
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" (click)="grabarAuto()">Save changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>

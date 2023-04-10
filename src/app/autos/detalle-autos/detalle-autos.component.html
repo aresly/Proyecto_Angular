@@ -1,0 +1,69 @@
+<div class="card">
+    <div class="card-header">
+        <h3>DETALLE DEL VEHICULO {{auto?.codigo}} - {{auto?.marca}} </h3>
+        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+            <a class="btn btn-primary" *ngIf="!isEditable" (click)="editar()">Editar</a>
+            <a class="btn btn-danger" *ngIf="isEditable" (click)="cancelar()">Cancelar</a>
+            <a class="btn btn-primary" *ngIf="isEditable" (click)="grabar()">Grabar</a>
+          </div>
+    </div>
+    <div class="card-body" *ngIf="auto">
+        <div class="row">
+            <div class="col-5">
+             
+              <img [src]="auto.foto"
+                    [style.width.px]="anchoImagen"
+                    [style.margin.px]="margenImagen" class="mx-auto d-block align-middle">
+            </div>
+
+      
+            <div class="col-6">
+              <form [formGroup]="formularioAuto">
+                <div class="mb-3 row">
+                  <label for="staticCodigo" class="col-sm-3 col-form-label">Codigo:</label>
+                  <div class="col-sm-9">
+                    <input type="text" [ngClass]="{'form-control-plaintext text-dark': !isEditable, 'form-control': isEditable}" 
+                      id="staticCodigo" formControlName="codigo">
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label for="staticMarca" class="col-sm-3 col-form-label">Marca:</label>
+                  <div class="col-sm-9">
+                    <input type="text" [ngClass]="{'form-control-plaintext text-dark': !isEditable, 'form-control': isEditable}" 
+                      id="staticMarca" formControlName="marca">
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label for="staticModelo" class="col-sm-3 col-form-label">Modelo:</label>
+                  <div class="col-sm-9">
+                    <input type="text" [ngClass]="{'form-control-plaintext text-dark': !isEditable, 'form-control': isEditable}" 
+                      id="staticModelo" formControlName="modelo">
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label for="staticModelo" class="col-sm-3 col-form-label">Año:</label>
+                  <div class="col-sm-9">
+                    <input type="text" [ngClass]="{'form-control-plaintext text-dark': !isEditable, 'form-control': isEditable}"
+                     id="staticModelo" formControlName="anio">
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label for="staticModelo" class="col-sm-4 col-form-label">Calificacion</label>
+                  <div class="col-sm-8">
+                    <estrellas [calificacion]="auto.calificacion" (starsClick)="onClickCalificacion($event)" *ngIf="!isEditable"></estrellas>
+                    <input type="text" [ngClass]="{'form-control-plaintext text-dark': !isEditable, 'form-control': isEditable}"
+                     id="staticModelo" formControlName="calificacion" *ngIf="isEditable">
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+    </div>
+   
+    <div class="card-footer">
+        <button class="btn btn-outline-secondary" style="width: 110px;" (click)="onBack()">
+            Regreso
+        </button>
+    </div>
+</div>
